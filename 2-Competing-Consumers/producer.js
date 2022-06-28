@@ -15,13 +15,13 @@ export default async function tasksProducer() {
         const channel = await conn.createChannel();
 
         const queue = "tasks";
-        await channel.assertQueue(queue);
+        await channel.assertQueue(queue, { durable: true });
 
         var messageId = 1;
 
         while(true) {
             const message = `Sending message Id: ${messageId}`;
-            channel.publish("", queue, Buffer.from(message));
+            channel.publish("", queue, Buffer.from(message), { persistent: true });
             console.log("Sent message:", message);
             await sleep(random.int(1, 4) * 1000);
             messageId += 1

@@ -16,13 +16,13 @@ export default async function tasksConsumer() {
         const channel = await conn.createChannel();
 
         const queue = "tasks";
-        await channel.assertQueue(queue);
+        await channel.assertQueue(queue, { durable: true });
         await channel.prefetch(1);
 
         console.log("Starting Consuming");
         await channel.consume(queue, async (msg) => {
             if(msg !== null) {
-                console.log(msg);
+                // console.log(msg);
                 const processing_time = random.int(1, 6);
                 console.log(`Received: "${msg.content.toString()}", will take ${processing_time}s to process`);
                 await sleep(processing_time * 1000);
